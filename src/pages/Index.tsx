@@ -7,6 +7,51 @@ import { toast } from 'sonner';
 
 const Index = () => {
   const [email, setEmail] = useState('');
+  const [likedCats, setLikedCats] = useState<number[]>([]);
+
+  const playSound = (type: 'like' | 'meow' | 'roar') => {
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    if (type === 'like') {
+      oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.2);
+    } else if (type === 'meow') {
+      oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(300, audioContext.currentTime + 0.15);
+      gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.2);
+    } else if (type === 'roar') {
+      oscillator.type = 'sawtooth';
+      oscillator.frequency.setValueAtTime(150, audioContext.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(80, audioContext.currentTime + 0.3);
+      gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.4);
+    }
+  };
+
+  const handleLike = (catId: number, catName: string) => {
+    if (catName === 'Шао Кан') {
+      playSound('roar');
+      toast.success('FATALITY! 💀⚔️');
+    } else {
+      playSound('meow');
+      toast.success('Мяу! ❤️');
+    }
+    setLikedCats([...likedCats, catId]);
+  };
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -172,9 +217,15 @@ const Index = () => {
                 <CardContent className="p-6">
                   <h4 className="text-2xl font-bold mb-2">{cat.name}</h4>
                   <p className="text-muted-foreground">{cat.description}</p>
-                  <Button className="mt-4 w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90">
-                    <Icon name="Heart" className="mr-2" />
-                    Нравится
+                  <Button 
+                    className="mt-4 w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-all"
+                    onClick={() => handleLike(cat.id, cat.name)}
+                  >
+                    <Icon 
+                      name="Heart" 
+                      className={`mr-2 transition-all ${likedCats.includes(cat.id) ? 'fill-white animate-pulse' : ''}`}
+                    />
+                    {likedCats.includes(cat.id) ? 'Нравится!' : 'Нравится'}
                   </Button>
                 </CardContent>
               </Card>
