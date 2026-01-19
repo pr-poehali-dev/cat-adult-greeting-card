@@ -25,9 +25,9 @@ const Index = () => {
     },
     {
       id: 2,
-      name: 'Рыжик',
-      image: 'https://cdn.poehali.dev/projects/4577b67a-e6a0-4554-91ba-4f1c9f4f22ef/files/2417fc1c-6632-4362-bff7-0d5d6c494045.jpg',
-      description: 'Игривый и озорной красавец'
+      name: 'Шао Кан',
+      image: 'https://cdn.poehali.dev/projects/4577b67a-e6a0-4554-91ba-4f1c9f4f22ef/files/20602e5a-6155-4f1a-b9bd-af422ee16e96.jpg',
+      description: 'Могучий император из Mortal Kombat'
     },
     {
       id: 3,
